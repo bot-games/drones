@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package drones;
+
+option go_package = "/pb";
+
+message State {
+  repeated Player players = 1;
+}
+
+message Player {
+  Drone drone = 1;
+}
+
+message Drone {
+  Vec2 pos = 1;
+  float angle = 2;
+}
+
+message Vec2 {
+  float x = 1;
+  float y = 2;
+}

@@ -1,0 +1,26 @@
+{
+  "ts": "2023-06-02T20:07:44.689420744+01:00",
+  "participants": [
+    {
+      "score": 0,
+      "new_score": 0,
+      "user": {
+        "id": 1,
+        "gh_login": "",
+        "name": "User 1",
+        "avatar_url": ""
+      }
+    },
+    {
+      "score": 0,
+      "new_score": 0,
+      "user": {
+        "id": 0,
+        "gh_login": "",
+        "name": "SmartGuy",
+        "avatar_url": ""
+      }
+    }
+  ],
+
+}

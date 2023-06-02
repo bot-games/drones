@@ -1,0 +1,25 @@
+{
+  "name": "player",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "webpack --mode production",
+    "serve": "webpack serve --mode development",
+    "proto": "pbjs -t static-module -w es6 -o src/proto/drones.js  ../proto/drones/*.proto && pbts -o src/proto/drones.d.ts src/proto/drones.js"
+  },
+  "devDependencies": {
+    "@types/three": "^0.150.1",
+    "json-loader": "^0.5.7",
+    "protobufjs": "^6.11.3",
+    "terser-webpack-plugin": "^5.3.7",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.79.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.2"
+  },
+  "dependencies": {
+    "three": "^0.151.3"
+  }
+}
