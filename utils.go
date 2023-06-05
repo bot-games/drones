@@ -34,3 +34,15 @@ func NormalizeVector(vector *pb.Vec2) *pb.Vec2 {
 
 	return &pb.Vec2{X: 0, Y: 0}
 }
+
+func LimitVector(vector *pb.Vec2, limit float32) *pb.Vec2 {
+	magnitude := float32(math.Sqrt(float64(vector.X*vector.X + vector.Y*vector.Y)))
+	if magnitude <= limit {
+		return vector
+	}
+
+	return &pb.Vec2{
+		X: vector.X / magnitude * limit,
+		Y: vector.Y / magnitude * limit,
+	}
+}

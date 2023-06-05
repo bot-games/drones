@@ -21,6 +21,7 @@ message Options {
     float width = 1;
     float height = 2;
     float weight = 3;
+    float maxForce = 4;
   }
 
   Maze maze = 1;

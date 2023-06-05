@@ -30,9 +30,10 @@ func (d Drones) Init() (proto.Message, proto.Message, uint8, any) {
 		},
 		CellSize: 50,
 		Drone: &pb.Options_Drone{
-			Width:  18,
-			Height: 8,
-			Weight: 1,
+			Width:    18,
+			Height:   8,
+			Weight:   1,
+			MaxForce: 500,
 		},
 		MaxTicks: 2000,
 	}
@@ -111,8 +112,9 @@ func (d Drones) ApplyActions(tickInfo *manager.TickInfo, actions []manager.Actio
 	for _, action := range actions {
 		switch a := action.Action.(*pb.Action).Action.(type) {
 		case *pb.Action_ApplyForce:
+			force := LimitVector(&pb.Vec2{X: a.ApplyForce.X, Y: a.ApplyForce.Y}, gameOptions.Drone.MaxForce)
 			tickInfo.GameData.(*gameData).drones[playerIdByUid(tickInfo.Uids, action.Uid)].
-				ApplyForceToCenter(box2d.MakeB2Vec2(float64(a.ApplyForce.X), float64(a.ApplyForce.Y)), true)
+				ApplyForceToCenter(box2d.MakeB2Vec2(float64(force.X), float64(force.Y)), true)
 		default:
 			panic("invalid action")
 		}
