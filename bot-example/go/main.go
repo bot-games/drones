@@ -10,7 +10,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/bot-games/drones/bot-example/go/api"
+	"bot/api"
 )
 
 var (

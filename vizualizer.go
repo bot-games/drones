@@ -1,6 +1,6 @@
 package drones
 
-import (
+/*import (
 	"github.com/ByteArena/box2d"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -56,3 +56,4 @@ func toScreenX(x float32) float32 {
 func toScreenY(y float32) float32 {
 	return 960 - y*scale
 }
+*/

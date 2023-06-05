@@ -1,14 +1,16 @@
 package main
 
 import (
-	"github.com/bot-games/drones"
-	"github.com/bot-games/drones/bot-example/go/api"
-	"github.com/bot-games/drones/pb"
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 	"image"
 	"image/color"
 	"math"
+
+	"github.com/bot-games/drones"
+	"github.com/bot-games/drones/pb"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
+
+	"bot/api"
 )
 
 const scale = 0.85
