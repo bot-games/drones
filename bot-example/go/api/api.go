@@ -64,6 +64,19 @@ func (a *Api) Join(token string, debug bool) (*Game, error) {
 	return game, nil
 }
 
+func (a *Api) Rejoin(token, gameId string) (*Game, error) {
+	game := &Game{}
+
+	if err := a.call("/rejoin/v1", struct {
+		Token  string `json:"token"`
+		GameId string `json:"game_id"`
+	}{token, gameId}, game); err != nil {
+		return nil, err
+	}
+
+	return game, nil
+}
+
 func (a *Api) WaitTurn(token, gameId string) (*GameState, error) {
 	gameState := &GameState{}
 

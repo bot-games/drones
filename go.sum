@@ -1,7 +1,7 @@
 github.com/ByteArena/box2d v1.0.2 h1:f7f9KEQWhCs1n516DMLzi5w6u0MeeE78Mes4fWMcj9k=
 github.com/ByteArena/box2d v1.0.2/go.mod h1:LzEuxY9iCz+tskfWCY3o0ywYBRafDDugdSj+/YGI6sE=
-github.com/bot-games/game-manager v0.6.0 h1:Gj+TmbfSuX2N9dkwlCyhI3Rwy0/IchlkBQ+72i79Ga0=
-github.com/bot-games/game-manager v0.6.0/go.mod h1:1K6+rqgAk2SAlTW5i4YgKORwf/Yp6GTjY1Sw7bgKfRc=
+github.com/bot-games/game-manager v0.7.0 h1:8jmVtmdgIgmKEdbg7wxEeJATUd/f9UNoTGRTR/agEPQ=
+github.com/bot-games/game-manager v0.7.0/go.mod h1:1K6+rqgAk2SAlTW5i4YgKORwf/Yp6GTjY1Sw7bgKfRc=
 github.com/bot-games/localrunner v0.2.0 h1:Kq/i5Q17yFUWz+QuQL7gn0fw9R9bU7eLElFAI9seH3M=
 github.com/bot-games/localrunner v0.2.0/go.mod h1:xKkvSPyZYjbeE/78ZnHgU5WumyJhxZWIZLrKjBwdJiQ=
 github.com/go-qbit/rpc v0.6.0 h1:F4kStcrzcHGVNj5BJenpztR61VxQIox8mS0EGirkOOI=

@@ -29,26 +29,14 @@ func main() {
 	}
 
 	bsApi := api.New(*apiUrl)
+	gameOptions, err := joinGame(bsApi)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	var gameOptions *pb.Options
 	var state *api.GameState
 	var path []drones.Position
 	var nexPoint *pb.Vec2
-
-	if *gameId == "" {
-		log.Println("Waiting opponent")
-		game, err := bsApi.Join(*token, *debug)
-		if err != nil {
-			if apiErr, ok := err.(*api.Error); ok && apiErr.Code == "AlreadyInGame" {
-				*gameId = apiErr.Data.(string)
-			} else {
-				log.Fatal(err)
-			}
-		} else {
-			*gameId = game.Id
-		}
-		gameOptions = game.Options
-	}
 
 	ebiten.SetWindowSize(1200, 1000)
 	ebiten.SetWindowTitle("Box2D Visualization")
@@ -113,6 +101,31 @@ func main() {
 		}
 
 		time.Sleep(30 * time.Millisecond)
+	}
+}
+
+func joinGame(bsApi *api.Api) (*pb.Options, error) {
+	if *gameId == "" {
+		log.Println("Waiting opponent")
+		game, err := bsApi.Join(*token, *debug)
+		if err != nil {
+			if apiErr, ok := err.(*api.Error); ok && apiErr.Code == "AlreadyInGame" {
+				*gameId = apiErr.Data.(string)
+				log.Printf("You are already in the game %s, rejoin...", *gameId)
+				return joinGame(bsApi)
+			}
+			return nil, err
+		} else {
+			log.Printf("The game %s has started", game.Id)
+			*gameId = game.Id
+			return game.Options, nil
+		}
+	} else {
+		game, err := bsApi.Rejoin(*token, *gameId)
+		if err != nil {
+			return nil, err
+		}
+		return game.Options, nil
 	}
 }
 

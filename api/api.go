@@ -19,6 +19,7 @@ import (
 
 	mActionApplyForce "github.com/bot-games/drones/api/method/action/applyforce"
 	mJoin "github.com/bot-games/drones/api/method/join"
+	mRejoin "github.com/bot-games/drones/api/method/rejoin"
 	mWaitTurn "github.com/bot-games/drones/api/method/wait_turn"
 )
 
@@ -31,6 +32,7 @@ func New(gm *manager.GameManager) *DronesRpc {
 
 	if err := gameRpc.RegisterMethods(
 		mJoin.New(gm),
+		mRejoin.New(gm),
 		mWaitTurn.New(gm),
 		mActionApplyForce.New(gm),
 	); err != nil {
