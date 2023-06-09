@@ -1,6 +1,6 @@
 ## Run
            
-for windows use `./gradlew.bat` instead
+for windows use `./gradlew.bat` instead of `./gradlew` (linux\macos)  
 
 `./gradlew run`
 
@@ -9,4 +9,5 @@ for windows use `./gradlew.bat` instead
 
 `./gradlew shadowJar`
 
-will create `./botfun-drones.jar` for you
+will create `./botfun-drones.jar` for you  
+run it with `java -jar botfun-drones.jar`

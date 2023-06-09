@@ -1,13 +1,16 @@
 import java.net.SocketTimeoutException
 import kotlin.math.*
+import kotlin.random.Random
+import kotlin.random.nextUInt
 
 
 fun main(args: Array<String>) {
 
-    // val apiUrl = "http://localhost:10000/game"        // localrunner
-    val apiUrl = "https://api.bot-games.fun/game/drones" // production
+    //val apiUrl = "http://localhost:10000/game"        // localrunner
+     val apiUrl = "https://api.bot-games.fun/game/drones" // production
 
-    val apiToken = "TOKEN FROM https://bot-games.fun/profile"  // or use Random.nextUInt().toString() for localrunner
+    //val apiToken = Random.nextUInt().toString()  // localrunner
+    val apiToken = "TOKEN FROM https://bot-games.fun/profile"  // production
     var apiGameId: String? = null
     val apiDebug = false   // true for game against SmartGuy (dummy bot), false for game against other players
 
@@ -51,19 +54,22 @@ fun main(args: Array<String>) {
 
     val actualGameId = apiGameId ?: game.id
 
-    var tick = -1
     while (true) {
-        tick++
         val gameState: Api.GameState
 
         try {
-            println("$tick Waiting for turn...")
+            println(" Waiting for turn...")
             gameState = api.waitTurn(apiToken, actualGameId)
+            val tickId = gameState.tickId
+            println("$tickId got turn state")
         } catch (e: Throwable) {
             if (e is GameServerError && e.error.code == "GameFinished") {
                 val gameResult = e.error.data ?: "?"
                 val iWinGame = e.error.data == "Win"
                 println("Game finished with result=$gameResult iWinGame=$iWinGame")
+
+                println("Production game replay " + apiUrl.replace("api.", "") + "/battle/" + game.id);
+                println("Localrunner game replay " + apiUrl.replace("/game", "") + "/battle/" + game.id);
                 break
             }
             throw e
