@@ -41,6 +41,31 @@ The winner is a player who leads his/her drone first to the goal, for example {2
 
 For more information see methods description below.
 
+## How to parse maze from `Options`
+
+The maze is a base64 encoded bytes array in the field `options.maze.walls`, for example:
+
+```json
+{
+  "options": {
+    "maze": {
+      "walls": "////IwLFq3rVq1jRq1/fixjQ+9rXi1rEu1r9A1rF71/doxjFu/rVixrUq1r3q1rEq9vdKxjBq3//KxjR69vVIRiE////"
+    }
+  }
+}
+```
+
+Each **bit** in the array defines if a cell has a wall or doesn't. See go example below, how to check the cell:
+
+```go
+func (m *Maze) IsWall(x, y uint8) bool {
+    i := int(m.Height-y-1)*int(m.Width) + int(x)
+    byteIndex := i / 8
+    bitIndex := uint(i % 8)
+    return m.Walls[byteIndex]&(1<<bitIndex) > 0
+}
+```
+
 ## The source code and bot examples
 
 You can find them in the [GitHub repository](https://github.com/bot-games/drones).
