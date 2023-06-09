@@ -1,0 +1,32 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version "1.7.20"
+    id 'application'
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.google.code.gson:gson:2.8.7'
+    testImplementation "org.jetbrains.kotlin:kotlin-test"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'MainKt'
+}
+
+shadowJar {
+    destinationDirectory = file("./")
+    archiveFileName = 'botfun-drones.jar'
+}
+
