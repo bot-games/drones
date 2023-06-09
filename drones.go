@@ -18,15 +18,14 @@ type gameData struct {
 func (d Drones) Init() (proto.Message, proto.Message, uint8, any) {
 	maze := NewMaze()
 
+	checkpoints := NewCheckPoints(maze)
+
 	options := &pb.Options{
 		Maze: &pb.Options_Maze{
-			Width:  uint32(maze.Width),
-			Height: uint32(maze.Height),
-			Walls:  maze.Walls,
-			Goal: &pb.Options_CellPos{
-				X: 22,
-				Y: 1,
-			},
+			Width:       uint32(maze.Width),
+			Height:      uint32(maze.Height),
+			Walls:       maze.Walls,
+			Checkpoints: checkpoints,
 		},
 		CellSize: 50,
 		Drone: &pb.Options_Drone{
@@ -46,6 +45,7 @@ func (d Drones) Init() (proto.Message, proto.Message, uint8, any) {
 						X: float32(options.CellSize) + options.Drone.Weight/2,
 						Y: float32(options.CellSize) - options.Drone.Height/2,
 					},
+					NextCheckpoint: 0,
 				},
 			},
 			{
@@ -54,6 +54,7 @@ func (d Drones) Init() (proto.Message, proto.Message, uint8, any) {
 						X: float32(options.CellSize) + options.Drone.Weight/2,
 						Y: float32(options.CellSize) + options.Drone.Height/2,
 					},
+					NextCheckpoint: 0,
 				},
 			},
 		},
@@ -125,19 +126,28 @@ func (d Drones) ApplyActions(tickInfo *manager.TickInfo, actions []manager.Actio
 	}
 
 	var finished []uint8
-	goal := Position{
-		X: uint8(gameOptions.Maze.Goal.X),
-		Y: uint8(gameOptions.Maze.Goal.Y),
-	}
+
 	for i, drone := range tickInfo.GameData.(*gameData).drones {
-		dronePos := b2VecToPbVec(drone.GetPosition())
-		state.Players[i].Drone = &pb.Drone{
-			Pos:   dronePos,
-			Angle: float32(drone.GetAngle()),
+		nextCheckpointI := state.Players[i].Drone.NextCheckpoint
+		nextCheckpointCellPos := gameOptions.Maze.Checkpoints[nextCheckpointI]
+		nextCheckpoint := Position{
+			X: uint8(nextCheckpointCellPos.X),
+			Y: uint8(nextCheckpointCellPos.Y),
 		}
 
-		if PosToGrid(gameOptions, dronePos) == goal {
-			finished = append(finished, uint8(i+1))
+		dronePos := b2VecToPbVec(drone.GetPosition())
+
+		state.Players[i].Drone = &pb.Drone{
+			Pos:            dronePos,
+			Angle:          float32(drone.GetAngle()),
+			NextCheckpoint: nextCheckpointI,
+		}
+
+		if PosToGrid(gameOptions, dronePos) == nextCheckpoint {
+			state.Players[i].Drone.NextCheckpoint++
+			if state.Players[i].Drone.NextCheckpoint == int32(len(gameOptions.Maze.Checkpoints)) {
+				finished = append(finished, uint8(i+1))
+			}
 		}
 	}
 
@@ -175,7 +185,9 @@ func (d Drones) SmartGuyTurn(tickInfo *manager.TickInfo) proto.Message {
 	}
 
 	drone := tickInfo.State.(*pb.State).Players[playerIdByUid(tickInfo.Uids, 0)].Drone
-	path := maze.Solve(PosToGrid(gameOptions, drone.Pos), Position{uint8(gameOptions.Maze.Goal.X), uint8(gameOptions.Maze.Goal.Y)})
+	nextCheckpointCellPos := gameOptions.Maze.Checkpoints[drone.GetNextCheckpoint()]
+	nextCheckpoint := Position{uint8(nextCheckpointCellPos.X), uint8(nextCheckpointCellPos.Y)}
+	path := maze.Solve(PosToGrid(gameOptions, drone.Pos), nextCheckpoint)
 
 	if len(path) > 1 {
 		goal := path[1]

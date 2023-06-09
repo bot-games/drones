@@ -14,7 +14,7 @@ message Options {
     uint32 width = 1;
     uint32 height = 2;
     bytes walls = 3; // Bit array of walls (1 - Wall, 0 - Path)
-    CellPos goal = 4;
+    repeated CellPos checkpoints = 4;
   }
 
   message Drone {

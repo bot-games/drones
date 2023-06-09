@@ -56,6 +56,7 @@ export class Player {
     private readonly renderer: THREE.WebGLRenderer
     private readonly font: Font
     private drones: Array<THREE.Mesh> = []
+    private dronesNextPoints: Array<THREE.Mesh> = []
 
     constructor(container: HTMLElement, gameData: GamesDataGameV1) {
         this.container = container
@@ -108,15 +109,26 @@ export class Player {
             }
         }
 
+        this.options.maze.checkpoints.forEach((c, i) => {
+            const geometry = new THREE.BoxGeometry()
+            geometry.scale(this.options.cellSize, this.options.cellSize, this.options.cellSize)
+            const material = new THREE.MeshPhongMaterial({color: 0x00ffff, opacity: 0.3, transparent: true})
+            const cube = new THREE.Mesh(geometry, material)
+            cube.position.set(c.x * this.options.cellSize, c.y * this.options.cellSize, 10)
+            this.scene.add(cube)
+        })
+
         this.ticks[0].players.forEach(((p, i) => {
             const geometry = new THREE.BoxGeometry()
             geometry.scale(this.options.drone.width, this.options.drone.height, this.options.drone.width)
             geometry.rotateZ(p.drone.angle)
-            const material = new THREE.MeshPhongMaterial({color: i == 0 ? 0xff0000 : 0xffff00})
+            let playerColor = i == 0 ? 0xff0000 : 0xffff00;
+            const material = new THREE.MeshPhongMaterial({color: playerColor})
             const cube = new THREE.Mesh(geometry, material)
             cube.position.set(p.drone.pos.x, p.drone.pos.y, 10)
             this.drones.push(cube)
             this.scene.add(cube)
+            this.addNextPoint(p, playerColor, i);
         }))
 
         this.participants.forEach((p, i) => {
@@ -138,6 +150,21 @@ export class Player {
         })
 
         this.animate()
+    }
+
+    private addNextPoint(p: drones.IPlayer, playerColor: number, i: number) {
+        const nextCheckpointPos = this.options.maze.checkpoints[p.drone.nextCheckpoint]
+        const geometry = new THREE.SphereGeometry()
+        geometry.scale(this.options.cellSize / 4, this.options.cellSize / 4, this.options.cellSize / 4)
+        const material = new THREE.MeshPhongMaterial({color: playerColor, opacity: 0.6, transparent: true})
+        const sphere = new THREE.Mesh(geometry, material)
+        sphere.position.set(
+            nextCheckpointPos.x * this.options.cellSize + this.options.cellSize / 8,
+            nextCheckpointPos.y * this.options.cellSize + this.options.cellSize / 8,
+            this.options.cellSize + i * (this.options.cellSize)
+        )
+        this.dronesNextPoints.push(sphere)
+        this.scene.add(sphere)
     }
 
     private initGUI() {
@@ -190,6 +217,10 @@ export class Player {
                     this.drones[i].position.setX(p.drone.pos.x)
                     this.drones[i].position.setY(p.drone.pos.y)
                     this.drones[i].rotation.z = p.drone.angle
+
+                    const nextCheckpointPos = this.options.maze.checkpoints[p.drone.nextCheckpoint]
+                    this.dronesNextPoints[i].position.setX(nextCheckpointPos.x * this.options.cellSize /*+ this.options.cellSize / 8*/)
+                    this.dronesNextPoints[i].position.setY(nextCheckpointPos.y * this.options.cellSize /*+ this.options.cellSize / 8*/)
                 })
             })
             .setValue(0)
