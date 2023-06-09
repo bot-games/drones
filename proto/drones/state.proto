@@ -15,6 +15,7 @@ message Player {
 message Drone {
   Vec2 pos = 1;
   float angle = 2;
+  int32 nextCheckpoint = 3;
 }
 
 message Vec2 {

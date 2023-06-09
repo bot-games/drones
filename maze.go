@@ -1,7 +1,9 @@
 package drones
 
 import (
+	"github.com/bot-games/drones/pb"
 	"github.com/itchyny/maze"
+	"math/rand"
 	"strings"
 )
 
@@ -38,6 +40,39 @@ type Maze struct {
 
 type Position struct {
 	X, Y uint8
+}
+
+func NewCheckPoints(maze *Maze) []*pb.Options_CellPos {
+	result := make([]*pb.Options_CellPos, 0)
+
+	for len(result) < 5 {
+
+		newX := uint8(rand.Intn(int(maze.Width)))
+		newY := uint8(rand.Intn(int(maze.Height)))
+		prevPosition := Position{1, 1}
+		if !maze.IsWall(newX, newY) {
+			alreadyExists := arrayContainsPoint(result, newX, newY)
+			if alreadyExists {
+				continue
+			}
+			distanceFromPrev := len(maze.Solve(prevPosition, Position{newX, newY}))
+
+			// TODO improve generation algorithm
+			if distanceFromPrev < 40 && distanceFromPrev > 10 {
+				prevPosition = Position{newX, newY}
+				result = append(result, &pb.Options_CellPos{X: uint32(newX), Y: uint32(newY)})
+			}
+		}
+	}
+
+	if !arrayContainsPoint(result, 22, 1) {
+		result = append(result, &pb.Options_CellPos{
+			X: 22,
+			Y: 1,
+		})
+	}
+
+	return result
 }
 
 func NewMaze() *Maze {
@@ -168,4 +203,15 @@ func (m *Maze) setWall(x, y uint8) {
 	byteIndex := i / 8
 	bitIndex := uint(i % 8)
 	m.Walls[byteIndex] |= 1 << bitIndex
+}
+
+func arrayContainsPoint(result []*pb.Options_CellPos, newX uint8, newY uint8) bool {
+	contains := false
+	for _, pos := range result {
+		if pos.X == uint32(newX) && pos.Y == uint32(newY) {
+			contains = true
+			break
+		}
+	}
+	return contains
 }

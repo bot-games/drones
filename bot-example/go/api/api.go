@@ -28,8 +28,9 @@ type Player struct {
 }
 
 type Drone struct {
-	Pos   Vec2    `json:"pos"`
-	Angle float32 `json:"angle"`
+	Pos            Vec2    `json:"pos"`
+	Angle          float32 `json:"angle"`
+	NextCheckpoint int32   `json:"next_checkpoint"`
 }
 
 type Vec2 struct {

@@ -917,7 +917,7 @@ export const drones = $root.drones = (() => {
              * @property {number|null} [width] Maze width
              * @property {number|null} [height] Maze height
              * @property {Uint8Array|null} [walls] Maze walls
-             * @property {drones.Options.ICellPos|null} [goal] Maze goal
+             * @property {Array.<drones.Options.ICellPos>|null} [checkpoints] Maze checkpoints
              */
 
             /**
@@ -929,6 +929,7 @@ export const drones = $root.drones = (() => {
              * @param {drones.Options.IMaze=} [properties] Properties to set
              */
             function Maze(properties) {
+                this.checkpoints = [];
                 if (properties)
                     for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -960,12 +961,12 @@ export const drones = $root.drones = (() => {
             Maze.prototype.walls = $util.newBuffer([]);
 
             /**
-             * Maze goal.
-             * @member {drones.Options.ICellPos|null|undefined} goal
+             * Maze checkpoints.
+             * @member {Array.<drones.Options.ICellPos>} checkpoints
              * @memberof drones.Options.Maze
              * @instance
              */
-            Maze.prototype.goal = null;
+            Maze.prototype.checkpoints = $util.emptyArray;
 
             /**
              * Creates a new Maze instance using the specified properties.
@@ -997,8 +998,9 @@ export const drones = $root.drones = (() => {
                     writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.height);
                 if (message.walls != null && Object.hasOwnProperty.call(message, "walls"))
                     writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.walls);
-                if (message.goal != null && Object.hasOwnProperty.call(message, "goal"))
-                    $root.drones.Options.CellPos.encode(message.goal, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.checkpoints != null && message.checkpoints.length)
+                    for (let i = 0; i < message.checkpoints.length; ++i)
+                        $root.drones.Options.CellPos.encode(message.checkpoints[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                 return writer;
             };
 
@@ -1043,7 +1045,9 @@ export const drones = $root.drones = (() => {
                         message.walls = reader.bytes();
                         break;
                     case 4:
-                        message.goal = $root.drones.Options.CellPos.decode(reader, reader.uint32());
+                        if (!(message.checkpoints && message.checkpoints.length))
+                            message.checkpoints = [];
+                        message.checkpoints.push($root.drones.Options.CellPos.decode(reader, reader.uint32()));
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -1089,10 +1093,14 @@ export const drones = $root.drones = (() => {
                 if (message.walls != null && message.hasOwnProperty("walls"))
                     if (!(message.walls && typeof message.walls.length === "number" || $util.isString(message.walls)))
                         return "walls: buffer expected";
-                if (message.goal != null && message.hasOwnProperty("goal")) {
-                    let error = $root.drones.Options.CellPos.verify(message.goal);
-                    if (error)
-                        return "goal." + error;
+                if (message.checkpoints != null && message.hasOwnProperty("checkpoints")) {
+                    if (!Array.isArray(message.checkpoints))
+                        return "checkpoints: array expected";
+                    for (let i = 0; i < message.checkpoints.length; ++i) {
+                        let error = $root.drones.Options.CellPos.verify(message.checkpoints[i]);
+                        if (error)
+                            return "checkpoints." + error;
+                    }
                 }
                 return null;
             };
@@ -1118,10 +1126,15 @@ export const drones = $root.drones = (() => {
                         $util.base64.decode(object.walls, message.walls = $util.newBuffer($util.base64.length(object.walls)), 0);
                     else if (object.walls.length)
                         message.walls = object.walls;
-                if (object.goal != null) {
-                    if (typeof object.goal !== "object")
-                        throw TypeError(".drones.Options.Maze.goal: object expected");
-                    message.goal = $root.drones.Options.CellPos.fromObject(object.goal);
+                if (object.checkpoints) {
+                    if (!Array.isArray(object.checkpoints))
+                        throw TypeError(".drones.Options.Maze.checkpoints: array expected");
+                    message.checkpoints = [];
+                    for (let i = 0; i < object.checkpoints.length; ++i) {
+                        if (typeof object.checkpoints[i] !== "object")
+                            throw TypeError(".drones.Options.Maze.checkpoints: object expected");
+                        message.checkpoints[i] = $root.drones.Options.CellPos.fromObject(object.checkpoints[i]);
+                    }
                 }
                 return message;
             };
@@ -1139,6 +1152,8 @@ export const drones = $root.drones = (() => {
                 if (!options)
                     options = {};
                 let object = {};
+                if (options.arrays || options.defaults)
+                    object.checkpoints = [];
                 if (options.defaults) {
                     object.width = 0;
                     object.height = 0;
@@ -1149,7 +1164,6 @@ export const drones = $root.drones = (() => {
                         if (options.bytes !== Array)
                             object.walls = $util.newBuffer(object.walls);
                     }
-                    object.goal = null;
                 }
                 if (message.width != null && message.hasOwnProperty("width"))
                     object.width = message.width;
@@ -1157,8 +1171,11 @@ export const drones = $root.drones = (() => {
                     object.height = message.height;
                 if (message.walls != null && message.hasOwnProperty("walls"))
                     object.walls = options.bytes === String ? $util.base64.encode(message.walls, 0, message.walls.length) : options.bytes === Array ? Array.prototype.slice.call(message.walls) : message.walls;
-                if (message.goal != null && message.hasOwnProperty("goal"))
-                    object.goal = $root.drones.Options.CellPos.toObject(message.goal, options);
+                if (message.checkpoints && message.checkpoints.length) {
+                    object.checkpoints = [];
+                    for (let j = 0; j < message.checkpoints.length; ++j)
+                        object.checkpoints[j] = $root.drones.Options.CellPos.toObject(message.checkpoints[j], options);
+                }
                 return object;
             };
 
@@ -1185,6 +1202,7 @@ export const drones = $root.drones = (() => {
              * @property {number|null} [width] Drone width
              * @property {number|null} [height] Drone height
              * @property {number|null} [weight] Drone weight
+             * @property {number|null} [maxForce] Drone maxForce
              */
 
             /**
@@ -1227,6 +1245,14 @@ export const drones = $root.drones = (() => {
             Drone.prototype.weight = 0;
 
             /**
+             * Drone maxForce.
+             * @member {number} maxForce
+             * @memberof drones.Options.Drone
+             * @instance
+             */
+            Drone.prototype.maxForce = 0;
+
+            /**
              * Creates a new Drone instance using the specified properties.
              * @function create
              * @memberof drones.Options.Drone
@@ -1256,6 +1282,8 @@ export const drones = $root.drones = (() => {
                     writer.uint32(/* id 2, wireType 5 =*/21).float(message.height);
                 if (message.weight != null && Object.hasOwnProperty.call(message, "weight"))
                     writer.uint32(/* id 3, wireType 5 =*/29).float(message.weight);
+                if (message.maxForce != null && Object.hasOwnProperty.call(message, "maxForce"))
+                    writer.uint32(/* id 4, wireType 5 =*/37).float(message.maxForce);
                 return writer;
             };
 
@@ -1298,6 +1326,9 @@ export const drones = $root.drones = (() => {
                         break;
                     case 3:
                         message.weight = reader.float();
+                        break;
+                    case 4:
+                        message.maxForce = reader.float();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -1343,6 +1374,9 @@ export const drones = $root.drones = (() => {
                 if (message.weight != null && message.hasOwnProperty("weight"))
                     if (typeof message.weight !== "number")
                         return "weight: number expected";
+                if (message.maxForce != null && message.hasOwnProperty("maxForce"))
+                    if (typeof message.maxForce !== "number")
+                        return "maxForce: number expected";
                 return null;
             };
 
@@ -1364,6 +1398,8 @@ export const drones = $root.drones = (() => {
                     message.height = Number(object.height);
                 if (object.weight != null)
                     message.weight = Number(object.weight);
+                if (object.maxForce != null)
+                    message.maxForce = Number(object.maxForce);
                 return message;
             };
 
@@ -1384,6 +1420,7 @@ export const drones = $root.drones = (() => {
                     object.width = 0;
                     object.height = 0;
                     object.weight = 0;
+                    object.maxForce = 0;
                 }
                 if (message.width != null && message.hasOwnProperty("width"))
                     object.width = options.json && !isFinite(message.width) ? String(message.width) : message.width;
@@ -1391,6 +1428,8 @@ export const drones = $root.drones = (() => {
                     object.height = options.json && !isFinite(message.height) ? String(message.height) : message.height;
                 if (message.weight != null && message.hasOwnProperty("weight"))
                     object.weight = options.json && !isFinite(message.weight) ? String(message.weight) : message.weight;
+                if (message.maxForce != null && message.hasOwnProperty("maxForce"))
+                    object.maxForce = options.json && !isFinite(message.maxForce) ? String(message.maxForce) : message.maxForce;
                 return object;
             };
 
@@ -1819,6 +1858,7 @@ export const drones = $root.drones = (() => {
          * @interface IDrone
          * @property {drones.IVec2|null} [pos] Drone pos
          * @property {number|null} [angle] Drone angle
+         * @property {number|null} [nextCheckpoint] Drone nextCheckpoint
          */
 
         /**
@@ -1853,6 +1893,14 @@ export const drones = $root.drones = (() => {
         Drone.prototype.angle = 0;
 
         /**
+         * Drone nextCheckpoint.
+         * @member {number} nextCheckpoint
+         * @memberof drones.Drone
+         * @instance
+         */
+        Drone.prototype.nextCheckpoint = 0;
+
+        /**
          * Creates a new Drone instance using the specified properties.
          * @function create
          * @memberof drones.Drone
@@ -1880,6 +1928,8 @@ export const drones = $root.drones = (() => {
                 $root.drones.Vec2.encode(message.pos, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.angle != null && Object.hasOwnProperty.call(message, "angle"))
                 writer.uint32(/* id 2, wireType 5 =*/21).float(message.angle);
+            if (message.nextCheckpoint != null && Object.hasOwnProperty.call(message, "nextCheckpoint"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.nextCheckpoint);
             return writer;
         };
 
@@ -1919,6 +1969,9 @@ export const drones = $root.drones = (() => {
                     break;
                 case 2:
                     message.angle = reader.float();
+                    break;
+                case 3:
+                    message.nextCheckpoint = reader.int32();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1963,6 +2016,9 @@ export const drones = $root.drones = (() => {
             if (message.angle != null && message.hasOwnProperty("angle"))
                 if (typeof message.angle !== "number")
                     return "angle: number expected";
+            if (message.nextCheckpoint != null && message.hasOwnProperty("nextCheckpoint"))
+                if (!$util.isInteger(message.nextCheckpoint))
+                    return "nextCheckpoint: integer expected";
             return null;
         };
 
@@ -1985,6 +2041,8 @@ export const drones = $root.drones = (() => {
             }
             if (object.angle != null)
                 message.angle = Number(object.angle);
+            if (object.nextCheckpoint != null)
+                message.nextCheckpoint = object.nextCheckpoint | 0;
             return message;
         };
 
@@ -2004,11 +2062,14 @@ export const drones = $root.drones = (() => {
             if (options.defaults) {
                 object.pos = null;
                 object.angle = 0;
+                object.nextCheckpoint = 0;
             }
             if (message.pos != null && message.hasOwnProperty("pos"))
                 object.pos = $root.drones.Vec2.toObject(message.pos, options);
             if (message.angle != null && message.hasOwnProperty("angle"))
                 object.angle = options.json && !isFinite(message.angle) ? String(message.angle) : message.angle;
+            if (message.nextCheckpoint != null && message.hasOwnProperty("nextCheckpoint"))
+                object.nextCheckpoint = message.nextCheckpoint;
             return object;
         };
 

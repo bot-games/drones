@@ -75,13 +75,14 @@ func main() {
 		}
 
 		drone := myPlayer.Drone
-		path = maze.Solve(posToGrid(gameOptions, &pb.Vec2{
+		nextCheckpointCellPos := gameOptions.Maze.Checkpoints[drone.NextCheckpoint]
+		nextCheckpoint := drones.Position{X: uint8(nextCheckpointCellPos.X), Y: uint8(nextCheckpointCellPos.Y)}
+
+		myCellPos := posToGrid(gameOptions, &pb.Vec2{
 			X: drone.Pos.X,
 			Y: drone.Pos.Y,
-		}), drones.Position{
-			X: uint8(gameOptions.Maze.Goal.X),
-			Y: uint8(gameOptions.Maze.Goal.Y),
 		})
+		path = maze.Solve(myCellPos, nextCheckpoint)
 
 		if len(path) > 1 {
 			goal := path[1]

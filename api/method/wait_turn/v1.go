@@ -25,8 +25,9 @@ type playerV1 struct {
 }
 
 type droneV1 struct {
-	Pos   vec2    `json:"pos"`
-	Angle float32 `json:"angle"`
+	Pos            vec2    `json:"pos"`
+	Angle          float32 `json:"angle"`
+	NextCheckpoint int32   `json:"next_checkpoint"`
 }
 
 type vec2 struct {
@@ -80,7 +81,8 @@ func (m *Method) V1(ctx context.Context, r *reqV1) (*stateV1, error) {
 					X: player.Drone.Pos.X,
 					Y: player.Drone.Pos.Y,
 				},
-				Angle: player.Drone.Angle,
+				Angle:          player.Drone.Angle,
+				NextCheckpoint: player.Drone.NextCheckpoint,
 			},
 		}
 	}

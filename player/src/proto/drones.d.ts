@@ -409,8 +409,8 @@ export namespace drones {
             /** Maze walls */
             walls?: (Uint8Array|null);
 
-            /** Maze goal */
-            goal?: (drones.Options.ICellPos|null);
+            /** Maze checkpoints */
+            checkpoints?: (drones.Options.ICellPos[]|null);
         }
 
         /** Represents a Maze. */
@@ -431,8 +431,8 @@ export namespace drones {
             /** Maze walls. */
             public walls: Uint8Array;
 
-            /** Maze goal. */
-            public goal?: (drones.Options.ICellPos|null);
+            /** Maze checkpoints. */
+            public checkpoints: drones.Options.ICellPos[];
 
             /**
              * Creates a new Maze instance using the specified properties.
@@ -516,6 +516,9 @@ export namespace drones {
 
             /** Drone weight */
             weight?: (number|null);
+
+            /** Drone maxForce */
+            maxForce?: (number|null);
         }
 
         /** Represents a Drone. */
@@ -535,6 +538,9 @@ export namespace drones {
 
             /** Drone weight. */
             public weight: number;
+
+            /** Drone maxForce. */
+            public maxForce: number;
 
             /**
              * Creates a new Drone instance using the specified properties.
@@ -796,6 +802,9 @@ export namespace drones {
 
         /** Drone angle */
         angle?: (number|null);
+
+        /** Drone nextCheckpoint */
+        nextCheckpoint?: (number|null);
     }
 
     /** Represents a Drone. */
@@ -812,6 +821,9 @@ export namespace drones {
 
         /** Drone angle. */
         public angle: number;
+
+        /** Drone nextCheckpoint. */
+        public nextCheckpoint: number;
 
         /**
          * Creates a new Drone instance using the specified properties.
