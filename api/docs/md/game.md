@@ -1,12 +1,14 @@
 ## The rules
 
-You have a maze with 2 drones, one of them is yours.
-The drones start in the start point, for example {1,1} (🛸).
-The winner is a player who leads his/her drone first to the goal, for example {22,1} (🥅).
+You have a maze with set of checkpoints(O) to visit, 2 drones, one of them is yours.  
+
+The drones start in the start point, for example {1,1} (🛸).  
+
+The winner is a player who leads his/her drone through all the checkpoints in order.
 
 ```
  22↑ ████████████████████████
- 21│ ██     █          █   ██
+ 21│ ██     █     O    █   ██
  20│ ██ ███ █ ██████ █ █ ████
  19│ ██   █     ██   █ █   ██
  18│ ████ █████ ██ ███████ ██
@@ -14,19 +16,19 @@ The winner is a player who leads his/her drone first to the goal, for example {2
  16│ ██████ ██████ █ █ ██████
  15│ ██   █     ██   █     ██
  14│ ██ █ ███ █ ██████████ ██
- 13│ ██ █     █ ██     █ █ ██
+ 13│ ██ █ O   █ ██     █ █ ██
  12│ ██ █████ ████ █ █ █ █ ██
  11│ ██     █   ██ █ █ █   ██
  10│ ██████ ███ ████ █ ███ ██
   9│ ██   █   █ ██   █     ██
   8│ ██ █ ███ █ ██ █████ ████
-  7│ ██ █     █ ██   █   █ ██
+  7│ ██ █    O█ ██   █   █ ██
   6│ ██ ███████ ████ █ ███ ██
   5│ ██ █       ██   █     ██
   4│ ████ ████████ ██████████
   3│ ██   █ █   ██ █     █ ██
   2│ ██ █ █ █ █ ██ █████ █ ██
-  1│ █🛸█     █ ██        🥅█
+  1│ █🛸█     █ ██         O█
   0│ ████████████████████████
    └────────────────────────→
      0123456789...
@@ -35,9 +37,10 @@ The winner is a player who leads his/her drone first to the goal, for example {2
 ## How to start a game
 
 1. Call the method **[join](#/RPC%20methods/join_v1)**.
-2. Call the method **[wait_turn](#/RPC%20methods/wait_turn_v1)** to receive the current game state.
-3. Call the action method (you have 5 seconds).
-4. Go to step 2.
+2. (optional) if you got error `AlreadyInGame` then you should call the method **[rejoin](#/RPC%20methods/rejoin_v1)** with gameId from **data** key.
+3. Call the method **[wait_turn](#/RPC%20methods/wait_turn_v1)** to receive the current game state.
+4. Call the action method **[applyforce](#/RPC%20methods/action_applyforce_v1)**
+5. Go to step 3
 
 For more information see methods description below.
 
@@ -49,7 +52,8 @@ The maze is a base64 encoded bytes array in the field `options.maze.walls`, for 
 {
   "options": {
     "maze": {
-      "walls": "////IwLFq3rVq1jRq1/fixjQ+9rXi1rEu1r9A1rF71/doxjFu/rVixrUq1r3q1rEq9vdKxjBq3//KxjR69vVIRiE////"
+      "walls": "////IwLFq3rVq1jRq1/fixjQ+9rXi1rEu1r9A1rF71/doxjFu/rVixrUq1r3q1rEq9vdKxjBq3//KxjR69vVIRiE////",
+      ...
     }
   }
 }
