@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/ByteArena/box2d v1.0.2
-	github.com/bot-games/game-manager v0.7.0
+	github.com/bot-games/game-manager v0.8.0
 	github.com/bot-games/localrunner v0.2.0
 	github.com/go-qbit/rpc v0.6.0
 	github.com/itchyny/maze v0.0.9

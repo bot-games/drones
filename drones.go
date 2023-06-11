@@ -72,24 +72,6 @@ func (d Drones) Init() (proto.Message, proto.Message, uint8, any) {
 	return options, state, 3, gd
 }
 
-func (d Drones) DecodeState(data []byte) (proto.Message, error) {
-	state := &pb.State{}
-	if err := proto.Unmarshal(data, state); err != nil {
-		return nil, err
-	}
-
-	return state, nil
-}
-
-func (d Drones) DecodeAction(data []byte) (proto.Message, error) {
-	action := &pb.Action{}
-	if err := proto.Unmarshal(data, action); err != nil {
-		return nil, err
-	}
-
-	return action, nil
-}
-
 func (d Drones) CheckAction(tickInfo *manager.TickInfo, action proto.Message) error {
 	//pbAction := action.(*pb.Action)
 	//pbAction.GetApplyForce()
