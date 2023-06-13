@@ -22,7 +22,7 @@ func NewHTTPHandler() *HTTPHandler {
 	return &HTTPHandler{
 		files: map[string]File{
 			"/game.md": {
-				ContentType: ``,
+				ContentType: `text/markdown; charset=utf-8`,
 				ETag:        "e39e7d668a97ce4d",
 				Data: []byte{31, 139, 8, 0, 0, 0, 0, 0, 2, 255, 172, 86, 219, 110, 219, 70, 16, 125, 223, 175, 56, 144, 145, 86, 98, 20, 210, 148, 124, 71, 90, 32, 77, 237, 196, 72, 2, 183, 110, 155,
 					180, 48, 130, 104, 69, 142, 196, 85, 72, 174, 180, 187, 180, 164, 4, 1, 138, 62, 4, 125, 109, 97, 244, 165, 15, 253, 141, 126, 143, 191,

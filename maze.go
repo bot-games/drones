@@ -1,10 +1,12 @@
 package drones
 
 import (
-	"github.com/bot-games/drones/pb"
-	"github.com/itchyny/maze"
 	"math/rand"
 	"strings"
+
+	"github.com/itchyny/maze"
+
+	"github.com/bot-games/drones/pb"
 )
 
 const (
@@ -43,33 +45,35 @@ type Position struct {
 }
 
 func NewCheckPoints(maze *Maze) []*pb.Options_CellPos {
-	result := make([]*pb.Options_CellPos, 0)
+	result := make([]*pb.Options_CellPos, 5)
 
-	for len(result) < 5 {
-
-		newX := uint8(rand.Intn(int(maze.Width)))
-		newY := uint8(rand.Intn(int(maze.Height)))
-		prevPosition := Position{1, 1}
-		if !maze.IsWall(newX, newY) {
-			alreadyExists := arrayContainsPoint(result, newX, newY)
-			if alreadyExists {
-				continue
+	var available []Position
+	for i, zone := range []struct {
+		X1, Y1, X2, Y2 uint8
+	}{
+		{1, 1, maze.Width / 2, maze.Height / 2},
+		{1, maze.Height/2 + 1, maze.Width / 2, maze.Height - 1},
+		{maze.Width/2 + 1, maze.Height/2 + 1, maze.Width - 1, maze.Height - 1},
+		{maze.Width/2 + 1, 1, maze.Width - 1, maze.Height / 2},
+	} {
+		available = available[:0]
+		for y := zone.Y1; y <= zone.Y2; y++ {
+			for x := zone.X1; x <= zone.X2; x++ {
+				if !maze.IsWall(x, y) {
+					available = append(available, Position{x, y})
+				}
 			}
-			distanceFromPrev := len(maze.Solve(prevPosition, Position{newX, newY}))
-
-			// TODO improve generation algorithm
-			if distanceFromPrev < 40 && distanceFromPrev > 10 {
-				prevPosition = Position{newX, newY}
-				result = append(result, &pb.Options_CellPos{X: uint32(newX), Y: uint32(newY)})
-			}
+		}
+		pos := available[rand.Intn(len(available))]
+		result[i] = &pb.Options_CellPos{
+			X: uint32(pos.X),
+			Y: uint32(pos.Y),
 		}
 	}
 
-	if !arrayContainsPoint(result, 22, 1) {
-		result = append(result, &pb.Options_CellPos{
-			X: 22,
-			Y: 1,
-		})
+	result[4] = &pb.Options_CellPos{
+		X: 22,
+		Y: 1,
 	}
 
 	return result
@@ -203,15 +207,4 @@ func (m *Maze) setWall(x, y uint8) {
 	byteIndex := i / 8
 	bitIndex := uint(i % 8)
 	m.Walls[byteIndex] |= 1 << bitIndex
-}
-
-func arrayContainsPoint(result []*pb.Options_CellPos, newX uint8, newY uint8) bool {
-	contains := false
-	for _, pos := range result {
-		if pos.X == uint32(newX) && pos.Y == uint32(newY) {
-			contains = true
-			break
-		}
-	}
-	return contains
 }
