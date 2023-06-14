@@ -204,7 +204,7 @@ export class Player {
         }
 
         const panel = new GUI({
-            title: 'Semaphore',
+            title: 'Drones',
             container: this.container,
             width: this.container.clientWidth,
             autoPlace: true
