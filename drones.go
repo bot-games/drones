@@ -16,9 +16,7 @@ type gameData struct {
 }
 
 func (d Drones) Init() (proto.Message, proto.Message, uint8, any) {
-	maze := NewMaze()
-
-	checkpoints := NewCheckPoints(maze)
+	maze, checkpoints := NewMaze()
 
 	options := &pb.Options{
 		Maze: &pb.Options_Maze{
@@ -38,24 +36,26 @@ func (d Drones) Init() (proto.Message, proto.Message, uint8, any) {
 		MaxTicks: 2000,
 	}
 
+	spawnPoint := checkpoints[0]
+
 	state := &pb.State{
 		Players: []*pb.Player{
 			{
 				Drone: &pb.Drone{
 					Pos: &pb.Vec2{
-						X: float32(options.CellSize) + options.Drone.Weight/2,
-						Y: float32(options.CellSize) - options.Drone.Height/2,
+						X: float32(spawnPoint.X*options.CellSize) + options.Drone.Weight/2,
+						Y: float32(spawnPoint.Y*options.CellSize) - options.Drone.Height/2,
 					},
-					NextCheckpoint: 0,
+					NextCheckpoint: 1,
 				},
 			},
 			{
 				Drone: &pb.Drone{
 					Pos: &pb.Vec2{
-						X: float32(options.CellSize) + options.Drone.Weight/2,
-						Y: float32(options.CellSize) + options.Drone.Height/2,
+						X: float32(spawnPoint.X*options.CellSize) + options.Drone.Weight/2,
+						Y: float32(spawnPoint.Y*options.CellSize) + options.Drone.Height/2,
 					},
-					NextCheckpoint: 0,
+					NextCheckpoint: 1,
 				},
 			},
 		},
@@ -182,8 +182,9 @@ func (d Drones) SmartGuyTurn(tickInfo *manager.TickInfo) proto.Message {
 		return &pb.Action{
 			Action: &pb.Action_ApplyForce{
 				ApplyForce: &pb.ActionApplyForce{
-					X: force.X * 500,
-					Y: force.Y * 500,
+					X:      force.X * 500,
+					Y:      force.Y * 500,
+					Torque: 0.0,
 				},
 			},
 		}
@@ -192,8 +193,9 @@ func (d Drones) SmartGuyTurn(tickInfo *manager.TickInfo) proto.Message {
 	return &pb.Action{
 		Action: &pb.Action_ApplyForce{
 			ApplyForce: &pb.ActionApplyForce{
-				X: 0,
-				Y: 0,
+				X:      0,
+				Y:      0,
+				Torque: 0.0,
 			},
 		},
 	}
