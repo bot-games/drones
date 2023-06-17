@@ -22,7 +22,7 @@ func NewHTTPHandler() *HTTPHandler {
 	return &HTTPHandler{
 		files: map[string]File{
 			"/bundle.js": {
-				ContentType: `application/javascript`,
+				ContentType: `text/javascript; charset=utf-8`,
 				ETag:        "d0ddedaa0ace6fad",
 				Data: []byte{31, 139, 8, 0, 0, 0, 0, 0, 2, 255, 212, 253, 249, 147, 93, 75, 182, 23, 134, 71, 124, 255, 146, 253, 244, 5, 81, 231, 170, 142, 110, 230, 202, 89, 82, 233, 250, 49, 121, 130,
 					6, 27, 227, 1, 33, 218, 213, 247, 214, 109, 21, 239, 84, 233, 86, 169, 238, 235, 110, 174, 228, 48, 30, 32, 176, 127, 32, 12, 142, 48,
