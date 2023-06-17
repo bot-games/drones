@@ -95,15 +95,19 @@ export class Player {
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6)
         directionalLight.position.set(0, 0, 1).normalize()
         this.scene.add(directionalLight)
+        let gameScale = this.getGameScale();
+
+        let scaledCellSize = this.options.cellSize * gameScale;
 
         for (let y = 0; y < this.options.maze.height; y++) {
             for (let x = 0; x < this.options.maze.width; x++) {
                 if (this.hasWall(x, y)) {
                     const geometry = new THREE.BoxGeometry()
-                    geometry.scale(this.options.cellSize, this.options.cellSize, this.options.cellSize)
+
+                    geometry.scale(scaledCellSize, scaledCellSize, scaledCellSize)
                     const material = new THREE.MeshPhongMaterial({color: 0x00ff00})
                     const cube = new THREE.Mesh(geometry, material)
-                    cube.position.set(x * this.options.cellSize, y * this.options.cellSize, 10)
+                    cube.position.set(x * scaledCellSize, y * scaledCellSize, 10)
                     this.scene.add(cube)
                 }
             }
@@ -111,24 +115,24 @@ export class Player {
 
         this.options.maze.checkpoints.forEach((c, i) => {
             const geometry = new THREE.BoxGeometry()
-            geometry.scale(this.options.cellSize, this.options.cellSize, this.options.cellSize)
+            geometry.scale(scaledCellSize, scaledCellSize, scaledCellSize)
             const material = new THREE.MeshPhongMaterial({color: 0x00ffff, opacity: 0.3, transparent: true})
             const cube = new THREE.Mesh(geometry, material)
-            cube.position.set(c.x * this.options.cellSize, c.y * this.options.cellSize, 10)
+            cube.position.set(c.x * scaledCellSize, c.y * scaledCellSize, 10)
             this.scene.add(cube)
         })
 
         this.ticks[0].players.forEach(((p, i) => {
             const geometry = new THREE.BoxGeometry()
-            geometry.scale(this.options.drone.width, this.options.drone.height, this.options.drone.width)
+            geometry.scale(this.options.drone.width * gameScale, this.options.drone.height * gameScale, this.options.drone.width * gameScale)
             geometry.rotateZ(p.drone.angle)
             let playerColor = i == 0 ? 0xff0000 : 0xffff00;
             const material = new THREE.MeshPhongMaterial({color: playerColor})
             const cube = new THREE.Mesh(geometry, material)
-            cube.position.set(p.drone.pos.x, p.drone.pos.y, 10)
+            cube.position.set(p.drone.pos.x * gameScale, p.drone.pos.y * gameScale, 10)
             this.drones.push(cube)
             this.scene.add(cube)
-            this.addNextPoint(p, playerColor, i);
+            this.addNextPoint(p, playerColor, i, gameScale);
         }))
 
         this.participants.forEach((p, i) => {
@@ -152,16 +156,25 @@ export class Player {
         this.animate()
     }
 
-    private addNextPoint(p: drones.IPlayer, playerColor: number, i: number) {
+    private getGameScale() {
+        let targetSize = 23 * 50;
+        let actualSize = Math.max(this.options.maze.width, this.options.maze.height) * this.options.cellSize
+
+        return targetSize / actualSize;
+    }
+
+    private addNextPoint(p: drones.IPlayer, playerColor: number, playerI: number, gameScale: number) {
         const nextCheckpointPos = this.options.maze.checkpoints[p.drone.nextCheckpoint]
         const geometry = new THREE.SphereGeometry()
-        geometry.scale(this.options.cellSize / 4, this.options.cellSize / 4, this.options.cellSize / 4)
+        let scaledCellSize = this.options.cellSize * gameScale
+
+        geometry.scale(scaledCellSize / 4, scaledCellSize / 4, scaledCellSize / 4)
         const material = new THREE.MeshPhongMaterial({color: playerColor, opacity: 0.6, transparent: true})
         const sphere = new THREE.Mesh(geometry, material)
         sphere.position.set(
-            nextCheckpointPos.x * this.options.cellSize + this.options.cellSize / 8,
-            nextCheckpointPos.y * this.options.cellSize + this.options.cellSize / 8,
-            this.options.cellSize + i * (this.options.cellSize)
+            nextCheckpointPos.x * scaledCellSize + scaledCellSize / 8,
+            nextCheckpointPos.y * scaledCellSize + scaledCellSize / 8,
+            scaledCellSize + playerI * scaledCellSize
         )
         this.dronesNextPoints.push(sphere)
         this.scene.add(sphere)
@@ -213,14 +226,17 @@ export class Player {
             .name('Current tick')
             .listen()
             .onChange(() => {
+                let gameScale = this.getGameScale();
+                let scaledCellSize = this.options.cellSize * gameScale;
+
                 this.ticks[this.settings.curTick].players.forEach((p, i) => {
-                    this.drones[i].position.setX(p.drone.pos.x)
-                    this.drones[i].position.setY(p.drone.pos.y)
+                    this.drones[i].position.setX(p.drone.pos.x * gameScale)
+                    this.drones[i].position.setY(p.drone.pos.y * gameScale)
                     this.drones[i].rotation.z = p.drone.angle
 
                     const nextCheckpointPos = this.options.maze.checkpoints[p.drone.nextCheckpoint]
-                    this.dronesNextPoints[i].position.setX(nextCheckpointPos.x * this.options.cellSize /*+ this.options.cellSize / 8*/)
-                    this.dronesNextPoints[i].position.setY(nextCheckpointPos.y * this.options.cellSize /*+ this.options.cellSize / 8*/)
+                    this.dronesNextPoints[i].position.setX(nextCheckpointPos.x * scaledCellSize /*+ this.options.cellSize / 8*/)
+                    this.dronesNextPoints[i].position.setY(nextCheckpointPos.y * scaledCellSize /*+ this.options.cellSize / 8*/)
                 })
             })
             .setValue(0)
