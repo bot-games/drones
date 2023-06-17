@@ -13,4 +13,5 @@ message Action {
 message ActionApplyForce {
   float x = 1;
   float y = 2;
+  float torque = 3;
 }

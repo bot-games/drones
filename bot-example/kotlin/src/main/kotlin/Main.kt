@@ -6,13 +6,13 @@ import kotlin.random.nextUInt
 
 fun main(args: Array<String>) {
 
-    //val apiUrl = "http://localhost:10000/game"        // localrunner
+    //val apiUrl = "http://127.0.0.1:10000/game"        // localrunner
      val apiUrl = "https://api.bot-games.fun/game/drones" // production
 
-    //val apiToken = Random.nextUInt().toString()  // localrunner
+  //  val apiToken = Random.nextUInt().toString()  // localrunner
     val apiToken = "TOKEN FROM https://bot-games.fun/profile"  // production
     var apiGameId: String? = null
-    val apiDebug = false   // true for game against SmartGuy (dummy bot), false for game against other players
+    val apiDebug = true   // true for game against SmartGuy (dummy bot), false for game against other players
 
     val api = Api(apiUrl)
 
@@ -75,27 +75,36 @@ fun main(args: Array<String>) {
             throw e
         }
 
-        for (player in gameState.players) {
-            if (player.isMe) {
-                val drone = player.drone
-                val nextCellPoint = gameOptions.maze.checkpoints[drone.nextCheckpointIndex]
-                val path = PathFinding.solve(
-                    gameOptions.maze,
-                    posToGrid(gameOptions, drone.pos),
-                    nextCellPoint
-                )
+        doTurnLogic(gameState, gameOptions, api, apiToken, actualGameId)
+    }
+}
 
-                if (path.size > 1) {
-                    val goal = path[1];
-                    val nextPoint = gridToPos(gameOptions, goal)
-                    val force = normalizeVector(calculateDirectionVector(drone.pos, nextPoint))
-                    api.applyForce(apiToken, actualGameId, force.x * 500, force.y * 500)
-                } else {
-                    api.applyForce(apiToken, actualGameId, 0F, 0F)
-                }
+private fun doTurnLogic(
+    gameState: Api.GameState,
+    gameOptions: Api.Options,
+    api: Api,
+    apiToken: String,
+    actualGameId: String
+) {
+    for (player in gameState.players) {
+        if (player.isMe) {
+            val drone = player.drone
+            val nextCellPoint = gameOptions.maze.checkpoints[drone.nextCheckpointIndex]
+            val path = PathFinding.solve(
+                gameOptions.maze,
+                posToGrid(gameOptions, drone.pos),
+                nextCellPoint
+            )
+
+            if (path.size > 1) {
+                val goal = path[1];
+                val nextPoint = gridToPos(gameOptions, goal)
+                val force = normalizeVector(calculateDirectionVector(drone.pos, nextPoint))
+                api.applyForce(apiToken, actualGameId, force.x * 500, force.y * 500, torque = 0f)
+            } else {
+                api.applyForce(apiToken, actualGameId, 0F, 0F, torque = 0F)
             }
         }
-        Thread.sleep(30)
     }
 }
 

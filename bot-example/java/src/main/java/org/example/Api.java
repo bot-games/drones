@@ -122,7 +122,7 @@ public class Api {
         public int cellSize;
 
         @SerializedName("drone")
-        public GameState.Drone drone;
+        public Options.Drone drone;
 
         @SerializedName("maxTicks")
         public int maxTicks;
@@ -200,6 +200,19 @@ public class Api {
                 return ((int) getWalls()[byteIndex] & (1 << bitIndex)) != 0;
             }
         }
+
+        public class Drone {
+            @SerializedName("width")
+            public float width;
+            @SerializedName("height")
+            public float height;
+            @SerializedName("weight")
+            public float weight;
+            @SerializedName("maxForce")
+            public float maxForce;
+            @SerializedName("maxTorque")
+            public float maxTorque;
+        }
     }
 
     public Game join(String token, boolean debug) {
@@ -235,14 +248,15 @@ public class Api {
         );
     }
 
-    public void applyForce(String token, String gameId, float x, float y) {
+    public void applyForce(String token, String gameId, float x, float y, float torque) {
         call(
                 baseUrl + "/action/applyforce/v1",
                 Map.of(
                         "token", token,
                         "game_id", gameId,
                         "x", x,
-                        "y", y
+                        "y", y,
+                        "torque", torque
                 ),
                 Object.class
         );

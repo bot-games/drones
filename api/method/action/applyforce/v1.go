@@ -15,6 +15,7 @@ type reqV1 struct {
 	GameId string  `json:"game_id"`
 	X      float32 `json:"x"`
 	Y      float32 `json:"y"`
+	Torque float32 `json:"torque"`
 }
 
 var errorsV1 struct {
@@ -31,8 +32,9 @@ func (m *Method) V1(ctx context.Context, r *reqV1) (*struct{}, error) {
 	if err := m.gm.DoAction(ctx, r.Token, r.GameId, &pb.Action{
 		Action: &pb.Action_ApplyForce{
 			ApplyForce: &pb.ActionApplyForce{
-				X: r.X,
-				Y: r.Y,
+				X:      r.X,
+				Y:      r.Y,
+				Torque: r.Torque,
 			},
 		},
 	}); err != nil {

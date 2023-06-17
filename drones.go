@@ -29,10 +29,11 @@ func (d Drones) Init() (proto.Message, proto.Message, uint8, any) {
 		},
 		CellSize: 50,
 		Drone: &pb.Options_Drone{
-			Width:    18,
-			Height:   8,
-			Weight:   1,
-			MaxForce: 500,
+			Width:     18,
+			Height:    8,
+			Weight:    1,
+			MaxForce:  500,
+			MaxTorque: 5,
 		},
 		MaxTicks: 2000,
 	}
@@ -96,8 +97,10 @@ func (d Drones) ApplyActions(tickInfo *manager.TickInfo, actions []manager.Actio
 		switch a := action.Action.(*pb.Action).Action.(type) {
 		case *pb.Action_ApplyForce:
 			force := LimitVector(&pb.Vec2{X: a.ApplyForce.X, Y: a.ApplyForce.Y}, gameOptions.Drone.MaxForce)
-			tickInfo.GameData.(*gameData).drones[playerIdByUid(tickInfo.Uids, action.Uid)].
-				ApplyForceToCenter(box2d.MakeB2Vec2(float64(force.X), float64(force.Y)), true)
+			torque := float64(LimitFloat(a.ApplyForce.Torque, gameOptions.Drone.MaxTorque))
+			droneBody := tickInfo.GameData.(*gameData).drones[playerIdByUid(tickInfo.Uids, action.Uid)]
+			droneBody.ApplyForceToCenter(box2d.MakeB2Vec2(float64(force.X), float64(force.Y)), true)
+			droneBody.ApplyTorque(torque, true)
 		default:
 			panic("invalid action")
 		}
@@ -210,5 +213,15 @@ func b2VecToPbVec(vec box2d.B2Vec2) *pb.Vec2 {
 	return &pb.Vec2{
 		X: float32(vec.X),
 		Y: float32(vec.Y),
+	}
+}
+
+func LimitFloat(value float32, limit float32) float32 {
+	if value > limit {
+		return limit
+	} else if value < -limit {
+		return -limit
+	} else {
+		return value
 	}
 }

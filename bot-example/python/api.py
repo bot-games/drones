@@ -89,7 +89,7 @@ class Api:
         """
 
         url = self.api_url + "/action/applyforce/v1"
-        request = f'{{"game_id":"{game_id}","token":"{self.api_token}","x":{action.acc_x},"y":{action.acc_y}}}'
+        request = f'{{"game_id":"{game_id}","token":"{self.api_token}","x":{action.acc_x},"y":{action.acc_y},"torque":{action.torque}}}'
         r = requests.post(url, data=request)
 
         if r.status_code != 200:

@@ -14,7 +14,7 @@ func main() {
 
 	localrunner.Start(
 		manager.New(
-			"semaphore", "Semaphore",
+			"drones", "drones",
 			drones.Drones{},
 			gameStorage, scheduler.New(),
 			func(m *manager.GameManager) manager.GameApi {

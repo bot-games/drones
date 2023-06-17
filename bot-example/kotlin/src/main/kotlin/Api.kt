@@ -4,7 +4,6 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
-import java.time.Duration
 import java.util.*
 
 class Api(val baseUrl: String) {
@@ -107,7 +106,10 @@ class Api(val baseUrl: String) {
             val weight: Float,
 
             @SerializedName("maxForce")
-            val maxForce: Float
+            val maxForce: Float,
+
+            @SerializedName("maxTorque")
+            val maxTorque: Float
         )
     }
 
@@ -144,7 +146,7 @@ class Api(val baseUrl: String) {
         )
     }
 
-    fun applyForce(token: String, gameId: String, x: Float, y: Float) {
+    fun applyForce(token: String, gameId: String, x: Float, y: Float, torque: Float) {
         call(
             url = "$baseUrl/action/applyforce/v1",
             bodyObject = mapOf<String, Any>(
@@ -152,6 +154,7 @@ class Api(val baseUrl: String) {
                 "game_id" to gameId,
                 "x" to x,
                 "y" to y,
+                "torque" to torque,
             ),
             responseClass = Unit::class.java
         )

@@ -98,6 +98,7 @@ class GameOptions:
         self.drone_height = float(json['drone']['height'])
         self.drone_weight = float(json['drone']['weight'])
         self.drone_max_force = float(json['drone']['maxForce'])
+        self.drone_max_torque = float(json['drone']['maxTorque'])
         self.max_ticks = int(json['maxTicks'])
 
 
@@ -120,6 +121,7 @@ class GameState:
 
 
 class GameAction:
-    def __init__(self, acc_x: float, acc_y: float):
+    def __init__(self, acc_x: float, acc_y: float, torque: float):
         self.acc_x = acc_x
         self.acc_y = acc_y
+        self.torque = torque
