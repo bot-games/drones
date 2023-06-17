@@ -1,7 +1,6 @@
 package drones
 
 import (
-	"bot/api"
 	"github.com/bot-games/drones/pb"
 	"math"
 	"math/rand"
@@ -240,8 +239,4 @@ func sub(v1 *PositionF, v2 *PositionF) PositionF {
 		X: v1.X - v2.X,
 		Y: v1.Y - v2.Y,
 	}
-}
-
-func distanceEuclide(p1 api.Vec2, p2 api.Vec2) float32 {
-	return float32(math.Sqrt(float64((p1.X-p2.X)*(p1.X-p2.X) + (p1.Y-p2.Y)*(p1.Y-p2.Y))))
 }
