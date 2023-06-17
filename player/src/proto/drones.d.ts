@@ -103,6 +103,9 @@ export namespace drones {
 
         /** ActionApplyForce y */
         y?: (number|null);
+
+        /** ActionApplyForce torque */
+        torque?: (number|null);
     }
 
     /** Represents an ActionApplyForce. */
@@ -119,6 +122,9 @@ export namespace drones {
 
         /** ActionApplyForce y. */
         public y: number;
+
+        /** ActionApplyForce torque. */
+        public torque: number;
 
         /**
          * Creates a new ActionApplyForce instance using the specified properties.
@@ -519,6 +525,9 @@ export namespace drones {
 
             /** Drone maxForce */
             maxForce?: (number|null);
+
+            /** Drone maxTorque */
+            maxTorque?: (number|null);
         }
 
         /** Represents a Drone. */
@@ -541,6 +550,9 @@ export namespace drones {
 
             /** Drone maxForce. */
             public maxForce: number;
+
+            /** Drone maxTorque. */
+            public maxTorque: number;
 
             /**
              * Creates a new Drone instance using the specified properties.

@@ -92,11 +92,11 @@ func main() {
 				X: drone.Pos.X,
 				Y: drone.Pos.Y,
 			}, nexPoint))
-			if err := bsApi.ActionApplyForce(*token, *gameId, force.X*500, force.Y*500); err != nil {
+			if err := bsApi.ActionApplyForce(*token, *gameId, force.X*500, force.Y*500, 0); err != nil {
 				log.Fatal(err)
 			}
 		} else {
-			if err := bsApi.ActionApplyForce(*token, *gameId, 0, 0); err != nil {
+			if err := bsApi.ActionApplyForce(*token, *gameId, 0, 0, 0); err != nil {
 				log.Fatal(err)
 			}
 		}

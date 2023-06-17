@@ -22,6 +22,7 @@ message Options {
     float height = 2;
     float weight = 3;
     float maxForce = 4;
+    float maxTorque = 5;
   }
 
   Maze maze = 1;

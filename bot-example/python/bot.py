@@ -34,9 +34,9 @@ class Bot:
             next_point = self.__grid_to_pos(path[1])
             d_vec = next_point[0] - my_drone.pos_x, next_point[1] - my_drone.pos_y
             force = self.__normalize_vector(d_vec)
-            return GameAction(force[0] * 500, force[1] * 500)
+            return GameAction(force[0] * 500, force[1] * 500, 0)
         else:
-            return GameAction(0, 0)
+            return GameAction(0, 0, 0)
 
     def __pos_to_grid(self, pos: Tuple[float, float]) -> Tuple[int, int]:
         cell_size = self.game_options.cell_size

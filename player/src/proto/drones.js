@@ -235,6 +235,7 @@ export const drones = $root.drones = (() => {
          * @interface IActionApplyForce
          * @property {number|null} [x] ActionApplyForce x
          * @property {number|null} [y] ActionApplyForce y
+         * @property {number|null} [torque] ActionApplyForce torque
          */
 
         /**
@@ -269,6 +270,14 @@ export const drones = $root.drones = (() => {
         ActionApplyForce.prototype.y = 0;
 
         /**
+         * ActionApplyForce torque.
+         * @member {number} torque
+         * @memberof drones.ActionApplyForce
+         * @instance
+         */
+        ActionApplyForce.prototype.torque = 0;
+
+        /**
          * Creates a new ActionApplyForce instance using the specified properties.
          * @function create
          * @memberof drones.ActionApplyForce
@@ -296,6 +305,8 @@ export const drones = $root.drones = (() => {
                 writer.uint32(/* id 1, wireType 5 =*/13).float(message.x);
             if (message.y != null && Object.hasOwnProperty.call(message, "y"))
                 writer.uint32(/* id 2, wireType 5 =*/21).float(message.y);
+            if (message.torque != null && Object.hasOwnProperty.call(message, "torque"))
+                writer.uint32(/* id 3, wireType 5 =*/29).float(message.torque);
             return writer;
         };
 
@@ -335,6 +346,9 @@ export const drones = $root.drones = (() => {
                     break;
                 case 2:
                     message.y = reader.float();
+                    break;
+                case 3:
+                    message.torque = reader.float();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -377,6 +391,9 @@ export const drones = $root.drones = (() => {
             if (message.y != null && message.hasOwnProperty("y"))
                 if (typeof message.y !== "number")
                     return "y: number expected";
+            if (message.torque != null && message.hasOwnProperty("torque"))
+                if (typeof message.torque !== "number")
+                    return "torque: number expected";
             return null;
         };
 
@@ -396,6 +413,8 @@ export const drones = $root.drones = (() => {
                 message.x = Number(object.x);
             if (object.y != null)
                 message.y = Number(object.y);
+            if (object.torque != null)
+                message.torque = Number(object.torque);
             return message;
         };
 
@@ -415,11 +434,14 @@ export const drones = $root.drones = (() => {
             if (options.defaults) {
                 object.x = 0;
                 object.y = 0;
+                object.torque = 0;
             }
             if (message.x != null && message.hasOwnProperty("x"))
                 object.x = options.json && !isFinite(message.x) ? String(message.x) : message.x;
             if (message.y != null && message.hasOwnProperty("y"))
                 object.y = options.json && !isFinite(message.y) ? String(message.y) : message.y;
+            if (message.torque != null && message.hasOwnProperty("torque"))
+                object.torque = options.json && !isFinite(message.torque) ? String(message.torque) : message.torque;
             return object;
         };
 
@@ -1203,6 +1225,7 @@ export const drones = $root.drones = (() => {
              * @property {number|null} [height] Drone height
              * @property {number|null} [weight] Drone weight
              * @property {number|null} [maxForce] Drone maxForce
+             * @property {number|null} [maxTorque] Drone maxTorque
              */
 
             /**
@@ -1253,6 +1276,14 @@ export const drones = $root.drones = (() => {
             Drone.prototype.maxForce = 0;
 
             /**
+             * Drone maxTorque.
+             * @member {number} maxTorque
+             * @memberof drones.Options.Drone
+             * @instance
+             */
+            Drone.prototype.maxTorque = 0;
+
+            /**
              * Creates a new Drone instance using the specified properties.
              * @function create
              * @memberof drones.Options.Drone
@@ -1284,6 +1315,8 @@ export const drones = $root.drones = (() => {
                     writer.uint32(/* id 3, wireType 5 =*/29).float(message.weight);
                 if (message.maxForce != null && Object.hasOwnProperty.call(message, "maxForce"))
                     writer.uint32(/* id 4, wireType 5 =*/37).float(message.maxForce);
+                if (message.maxTorque != null && Object.hasOwnProperty.call(message, "maxTorque"))
+                    writer.uint32(/* id 5, wireType 5 =*/45).float(message.maxTorque);
                 return writer;
             };
 
@@ -1329,6 +1362,9 @@ export const drones = $root.drones = (() => {
                         break;
                     case 4:
                         message.maxForce = reader.float();
+                        break;
+                    case 5:
+                        message.maxTorque = reader.float();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -1377,6 +1413,9 @@ export const drones = $root.drones = (() => {
                 if (message.maxForce != null && message.hasOwnProperty("maxForce"))
                     if (typeof message.maxForce !== "number")
                         return "maxForce: number expected";
+                if (message.maxTorque != null && message.hasOwnProperty("maxTorque"))
+                    if (typeof message.maxTorque !== "number")
+                        return "maxTorque: number expected";
                 return null;
             };
 
@@ -1400,6 +1439,8 @@ export const drones = $root.drones = (() => {
                     message.weight = Number(object.weight);
                 if (object.maxForce != null)
                     message.maxForce = Number(object.maxForce);
+                if (object.maxTorque != null)
+                    message.maxTorque = Number(object.maxTorque);
                 return message;
             };
 
@@ -1421,6 +1462,7 @@ export const drones = $root.drones = (() => {
                     object.height = 0;
                     object.weight = 0;
                     object.maxForce = 0;
+                    object.maxTorque = 0;
                 }
                 if (message.width != null && message.hasOwnProperty("width"))
                     object.width = options.json && !isFinite(message.width) ? String(message.width) : message.width;
@@ -1430,6 +1472,8 @@ export const drones = $root.drones = (() => {
                     object.weight = options.json && !isFinite(message.weight) ? String(message.weight) : message.weight;
                 if (message.maxForce != null && message.hasOwnProperty("maxForce"))
                     object.maxForce = options.json && !isFinite(message.maxForce) ? String(message.maxForce) : message.maxForce;
+                if (message.maxTorque != null && message.hasOwnProperty("maxTorque"))
+                    object.maxTorque = options.json && !isFinite(message.maxTorque) ? String(message.maxTorque) : message.maxTorque;
                 return object;
             };
 

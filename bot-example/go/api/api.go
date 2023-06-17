@@ -91,7 +91,7 @@ func (a *Api) WaitTurn(token, gameId string) (*GameState, error) {
 	return gameState, nil
 }
 
-func (a *Api) ActionApplyForce(token, gameId string, x, y float32) error {
+func (a *Api) ActionApplyForce(token, gameId string, x, y, torque float32) error {
 	var resp struct{}
 
 	return a.call("/action/applyforce/v1", struct {
@@ -99,7 +99,8 @@ func (a *Api) ActionApplyForce(token, gameId string, x, y float32) error {
 		GameId string  `json:"game_id"`
 		X      float32 `json:"x"`
 		Y      float32 `json:"y"`
-	}{token, gameId, x, y}, &resp)
+		Torque float32 `json:"torque"`
+	}{token, gameId, x, y, torque}, &resp)
 }
 
 func (a *Api) call(method string, req, resp interface{}) error {
