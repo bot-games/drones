@@ -36,7 +36,7 @@ public class Main {
                             game = api.rejoin(apiToken, apiGameId);
                             break;
                         }
-                    } else if (e instanceof SocketTimeoutException) {
+                    } else if (e.getCause() instanceof SocketTimeoutException) {
                         System.out.println("Join timeout, sleep and retrying...");
                         Thread.sleep(500);
                     } else {
