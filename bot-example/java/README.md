@@ -1,8 +1,9 @@
 ## Run
 
 You need **maven** installed in system
-
-` mvn exec:java`
+ 
+`mvn compile`  
+`mvn exec:java`
 
 ## Build fat jar
 
