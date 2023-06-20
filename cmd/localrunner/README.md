@@ -8,12 +8,14 @@
 git clone https://github.com/bot-games/drones.git
 ```
 * Build LocalRunner:
-Linux
+
+__Linux__
 ```shell
 cd drones
 go build -o localrunner cmd/localrunner/main.go
 ```
-Windows
+
+__Windows__
 ```shell
 cd /d C:\repos\drones
 go build -o localrunner.exe cmd/localrunner/main.go
@@ -21,10 +23,12 @@ go build -o localrunner.exe cmd/localrunner/main.go
 
 
 ## How to run
-Linux
+__Linux__
+
 Run `./localrunner -help` to see options.
 
-Windows
+__Windows__
+
 Run `localrunner.exe -help` to see options.
 
 ## How to use
