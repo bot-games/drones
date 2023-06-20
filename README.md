@@ -6,6 +6,8 @@ on the [bot-games.fun](https://bot-games.fun) site.
 * [Java](bot-example/java)
 * [Kotlin](bot-example/kotlin)
 * [Python](bot-example/python)
+* [C++](bot-example/cpp20)
+
 
 *Just create a pull request if you want to add an example for your favourite language.*
 
