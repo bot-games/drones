@@ -8,13 +8,28 @@
 git clone https://github.com/bot-games/drones.git
 ```
 * Build LocalRunner:
+
+__Linux__
 ```shell
 cd drones
 go build -o localrunner cmd/localrunner/main.go
 ```
 
+__Windows__
+```shell
+cd /d C:\repos\drones
+go build -o localrunner.exe cmd/localrunner/main.go
+```
+
+
 ## How to run
+__Linux__
+
 Run `./localrunner -help` to see options.
+
+__Windows__
+
+Run `localrunner.exe -help` to see options.
 
 ## How to use
 By default, LocalRunner listens on http://localhost:10000.
